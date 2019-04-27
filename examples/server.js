@@ -25,11 +25,49 @@ router.get('/simple/get', function (req, res) {
   })
 })
 
+router.get('/base/get', function (req, res) {
+  res.json(req.query)
+})
+
+router.post('/base/post', function (req, res) {
+  res.json(req.body)
+})
+
+router.post('/base/buffer', function (req, res) {
+  let result = []
+  req.on('data', (chunk) => {
+    if (chunk) {
+      result.push(chunk)
+    }
+  })
+  req.on('end', () => {
+    let buf = Buffer.concat(result)
+    res.json(buf.toJSON())
+  })
+})
+
+router.get('/error/get', (req, res) => {
+  if (Math.random() > 0.5) {
+    res.json({ message: 'Hello world' })
+  } else {
+    res.status(500)
+    res.end()
+  }
+})
+
+router.get('/error/timeout', (req, res) => {
+  setTimeout(() => {
+    res.json({
+      message: 'Hello world!'
+    })
+  }, 3000)
+})
+
 app.use(router)
 app.use(webpackHotMiddleware(compiler))
 app.use(express.static(__dirname))
+app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true }))
 
 module.exports = app.listen(port, () => {
   console.log(`service is running at http://${host}:${port}`)
