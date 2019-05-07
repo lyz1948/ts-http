@@ -1,10 +1,10 @@
-import { AxiosRequestConfig, AxiosResponse, AxiosPromise } from './types'
-import { parseHeaders } from './utils/headers'
-import { createError } from './utils/error'
+import { AxiosRequestConfig, AxiosResponse, AxiosPromise } from '../types'
+import { parseHeaders } from '../utils/headers'
+import { createError } from '../utils/error'
 
 export default function xhr(config: AxiosRequestConfig): AxiosPromise {
   return new Promise((resolve, reject) => {
-    const { url, data = null, method = 'get', headers, responseType, timeout } = config
+    const { data = null, url, method = 'get', headers, responseType, timeout } = config
 
     const request = new XMLHttpRequest()
 
@@ -16,7 +16,7 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
       request.timeout = timeout
     }
 
-    request.open(method.toUpperCase(), url, true)
+    request.open(method.toUpperCase(), url!, true)
 
     request.onreadystatechange = function handleLoad() {
       if (request.readyState !== 4) {
@@ -30,7 +30,7 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
       const responseHeaders = parseHeaders(request.getAllResponseHeaders())
       const responseData =
         responseType && responseType !== 'text' ? request.response : request.responseText
-
+      console.log(responseData)
       const response: AxiosResponse = {
         data: responseData,
         status: request.status,
@@ -51,7 +51,7 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
 
     request.onerror = function handleError() {
       reject(createError('Network Error', config, null, request))
-      reject(new Error('Network Error'))
+      // reject(new Error('Network Error'))
     }
 
     Object.keys(headers).forEach(name => {
@@ -61,16 +61,23 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
         request.setRequestHeader(name, headers[name])
       }
     })
+
+    // if (cancelToken) {
+    //   cancelToken.promise.then(reason => {
+    //     request.abort()
+    //     reject(reason)
+    //   })
+    // }
+
     request.send(data)
 
-    function handleResponse(res: AxiosResponse) {
-      if (res.status > 200 && res.status < 300) {
+    function handleResponse(res: AxiosResponse): void {
+      if (res.status >= 200 && res.status < 300) {
         resolve(res)
       } else {
         reject(
           createError(`Request failed with status code ${res.status}`, config, null, request, res)
         )
-        reject(new Error(`Request failed with status code ${res.status}`))
       }
     }
   })

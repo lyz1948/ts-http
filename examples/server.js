@@ -10,32 +10,36 @@ const compiler = webpack(WebpackConfig)
 const host = '127.0.0.1'
 const port = process.env.PORT || 4000
 
-app.use(webpackDevMiddleware(compiler, {
-  publicPath: '/__build__/',
-  stats: {
-    colors: true,
-    chunks: false
-  }
-}))
+app.use(
+  webpackDevMiddleware(compiler, {
+    publicPath: '/__build__/',
+    stats: {
+      colors: true,
+      chunks: false
+    }
+  })
+)
 const router = express.Router()
 
-router.get('/simple/get', function (req, res) {
+registerExtendRouter()
+
+router.get('/simple/get', function(req, res) {
   res.json({
     msg: `hello world`
   })
 })
 
-router.get('/base/get', function (req, res) {
+router.get('/base/get', function(req, res) {
   res.json(req.query)
 })
 
-router.post('/base/post', function (req, res) {
+router.post('/base/post', function(req, res) {
   res.json(req.body)
 })
 
-router.post('/base/buffer', function (req, res) {
+router.post('/base/buffer', function(req, res) {
   let result = []
-  req.on('data', (chunk) => {
+  req.on('data', chunk => {
     if (chunk) {
       result.push(chunk)
     }
@@ -62,6 +66,38 @@ router.get('/error/timeout', (req, res) => {
     })
   }, 3000)
 })
+
+function registerExtendRouter() {
+  router.get('/extend/get', (req, res) => {
+    res.json({
+      message: 'hello typescript'
+    })
+  })
+
+  router.options('/extend/options', (req, res) => {
+    res.end()
+  })
+
+  router.delete('/extend/delete', (req, res) => {
+    res.end()
+  })
+
+  router.head('/extend/head', (req, res) => {
+    res.end()
+  })
+
+  router.post('/extend/post', (req, res) => {
+    res.json(req.body)
+  })
+
+  router.put('/extend/put', (req, res) => {
+    res.json(req.body)
+  })
+
+  router.patch('/extend/patch', (req, res) => {
+    res.json(req.body)
+  })
+}
 
 app.use(router)
 app.use(webpackHotMiddleware(compiler))
