@@ -29,6 +29,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 const router = express.Router()
 
 requestSimpleRoute()
+requestBashRoute()
 
 function requestSimpleRoute() {
   router.get('/simple/get', (req, res) => {
@@ -37,6 +38,13 @@ function requestSimpleRoute() {
     })
   })
 }
+
+function requestBashRoute() {
+  router.get('/base/get', (req, res) => {
+    res.json(req.query)
+  })
+}
+
 app.use(router)
 
 module.export = app.listen(port, () => {
