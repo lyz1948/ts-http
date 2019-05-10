@@ -11,10 +11,13 @@ export type Method =
   | 'DELETE'
   | 'patch'
   | 'PATCH'
+  | 'options'
+  | 'OPTIONS'
 
 export interface AxiosRequestConfig {
   url: string
   method?: Method
   data?: any
   params?: any
+  headers?: any
 }
