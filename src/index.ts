@@ -21,7 +21,7 @@ function transformURL(config: AxiosRequestConfig): string {
 }
 
 function transformRequestData(config: AxiosRequestConfig): any {
-  return transformRequest(config)
+  return transformRequest(config.data)
 }
 
 function transformHeaders(config: AxiosRequestConfig): any {
