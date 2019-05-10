@@ -29,7 +29,8 @@ app.use(bodyParser.urlencoded({ extended: true }))
 const router = express.Router()
 
 requestSimpleRoute()
-requestBashRoute()
+requestBaseRoute()
+requestErrorRoute()
 
 function requestSimpleRoute() {
   router.get('/simple/get', (req, res) => {
@@ -39,7 +40,7 @@ function requestSimpleRoute() {
   })
 }
 
-function requestBashRoute() {
+function requestBaseRoute() {
   router.get('/base/get', (req, res) => {
     res.json(req.query)
   })
@@ -61,6 +62,27 @@ function requestBashRoute() {
       let buf = Buffer.concat(msg)
       res.json(buf.toJSON())
     })
+  })
+}
+
+function requestErrorRoute() {
+  router.get('/error/get', function(req, res) {
+    if (Math.random() > 0.5) {
+      res.json({
+        message: 'hi, see me then network is ok'
+      })
+    } else {
+      res.status(500)
+      res.end()
+    }
+  })
+
+  router.get('/error/timeout', function(req, res) {
+    setTimeout(() => {
+      res.json({
+        message: 'hello world'
+      })
+    }, 4000)
   })
 }
 
