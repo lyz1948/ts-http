@@ -46,3 +46,26 @@ axios({
   }
 })
 
+interface ResponseData<T = any> {
+  code: number
+  resulte: T
+  message: string
+}
+
+interface User<T=any> {
+  name: string
+  age: number
+}
+
+function getUser<T = any>() {
+  return axios<ResponseData<T>>('/extend/user')
+    .then(res => res.data)
+    .catch(err => console.log(err))
+}
+
+;(async function getUserInfo () {
+  const user = await getUser<User>()
+  if (user) {
+    console.log(user.resulte)
+  }
+}())
