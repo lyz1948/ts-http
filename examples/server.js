@@ -32,6 +32,7 @@ requestSimpleRoute()
 requestBaseRoute()
 requestErrorRoute()
 requestExtendRouter()
+requestInterceptorRouter()
 
 function requestSimpleRoute() {
   router.get('/simple/get', (req, res) => {
@@ -127,6 +128,12 @@ function requestExtendRouter() {
         age: 15
       }
     })
+  })
+}
+
+function requestInterceptorRouter() {
+  router.get('/interceptors/get', (req, res) => {
+    res.send('hello')
   })
 }
 
