@@ -33,6 +33,7 @@ requestBaseRoute()
 requestErrorRoute()
 requestExtendRouter()
 requestInterceptorRouter()
+requestConfigRouter()
 
 function requestSimpleRoute() {
   router.get('/simple/get', (req, res) => {
@@ -134,6 +135,12 @@ function requestExtendRouter() {
 function requestInterceptorRouter() {
   router.get('/interceptors/get', (req, res) => {
     res.send('hello')
+  })
+}
+
+function requestConfigRouter() {
+  router.post('/config/post', (req, res) => {
+    res.json(req.body)
   })
 }
 
