@@ -1,9 +1,12 @@
 const express = require('express')
 const webpack = require('webpack')
 const bodyParser = require('body-parser')
+const cookieParse = require('cookie-parser')
 const webpackDevMiddleware = require('webpack-dev-middleware')
 const webpackHotMiddleware = require('webpack-hot-middleware')
 const WebpackConfig = require('./webpack.config')
+
+require('./server2')
 
 const app = express()
 const compiler = webpack(WebpackConfig)
@@ -19,12 +22,10 @@ app.use(webpackDevMiddleware(compiler, {
 }))
 
 app.use(webpackHotMiddleware(compiler))
-
 app.use(express.static(__dirname))
-
 app.use(bodyParser.json())
-
 app.use(bodyParser.urlencoded({ extended: true }))
+app.use(cookieParse())
 
 const router = express.Router()
 
@@ -35,6 +36,7 @@ requestExtendRouter()
 requestInterceptorRouter()
 requestConfigRouter()
 requestCancelRouter()
+requstMoreRouter()
 
 function requestSimpleRoute() {
   router.get('/simple/get', (req, res) => {
@@ -156,6 +158,12 @@ function requestCancelRouter() {
     setTimeout(() => {
       res.json(req.body)
     }, 1000)
+  })
+}
+
+function requstMoreRouter() {
+  router.get('/more/get', (req, res) => {
+    res.json(req.cookies)
   })
 }
 
