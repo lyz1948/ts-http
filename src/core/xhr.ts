@@ -3,6 +3,7 @@ import { parseHeaders } from '../utils/headers'
 import { createError } from '../utils/error'
 import { isSameOriginUrl } from '../utils/url'
 import cookie from '../utils/cookie'
+import { isFormData } from '../utils'
 
 export default function xhr(config: AxiosRequestConfig): AxiosPromise {
   return new Promise((resolve, reject) => {
@@ -16,7 +17,9 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
       cancelToken,
       withCredentials,
       xsrfCookieName,
-      xsrfHeadersName
+      xsrfHeadersName,
+      onDownloadProgress,
+      onUploadProgress
     } = config
 
     const request = new XMLHttpRequest()
@@ -64,6 +67,18 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
 
     request.ontimeout = function handleTimeout() {
       reject(createError(`Timeout of ${timeout} ms exceeded`, config, 'ECONNABORTED', request))
+    }
+
+    if (onDownloadProgress) {
+      request.onprogress = onDownloadProgress
+    }
+
+    if (onUploadProgress) {
+      request.upload.onprogress = onUploadProgress
+    }
+
+    if (isFormData(data)) {
+      delete headers['Content-Type']
     }
 
     if ((withCredentials || isSameOriginUrl) && xsrfCookieName) {

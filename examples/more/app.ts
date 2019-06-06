@@ -1,20 +1,57 @@
 import axios from '../../src/index'
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
 
-// document.cookie = 'a=b'
+const service = axios.create()
 
-// axios.get('/more/get').then(res => {
-//   console.log(res)
-// })
+function calcPercentage(loaded: number, total: number): number {
+  return Math.floor(loaded * 1.0) / total
+}
 
-// axios.post('http://127.0.0.1:4040/more/server2', {}, {
-//   withCredentials: true
-// }).then(res => {
-//   console.log(res)
-// })
+function loadProgressBar() {
+  const startProgress = function() {
+    service.interceptors.request.use(config => {
+      NProgress.start()
+      return config
+    })
+  }
+  const updateProgress = function() {
+    const update = (e: ProgressEvent) => {
+      console.log(e)
+      NProgress.set(calcPercentage(e.loaded, e.total))
+    }
+    service.defaults.onDownloadProgress = update
+    service.defaults.onUploadProgress = update
+  }
+  const stopProgress = function() {
+    service.interceptors.response.use(res => {
+      NProgress.done()
+      return res
+    }, error => {
+      NProgress.done()
+      return Promise.reject(error)
+    })
+  }
+  startProgress()
+  updateProgress()
+  stopProgress()
+}
 
-const instance = axios.create({
-  xsrfCookieName: 'XSRF-TOKEN-D',
-  xsrfHeadersName: 'X-XSRF-TOKEN-D'
+loadProgressBar()
+
+const downloadEl = document.getElementById('down')
+
+downloadEl.addEventListener('click', function() {
+  const imgUrl = 'http://a.hiphotos.baidu.com/image/h%3D300/sign=a62e824376d98d1069d40a31113eb807/838ba61ea8d3fd1fc9c7b6853a4e251f94ca5f46.jpg'
+  service.get(imgUrl)
 })
 
-instance.get('/more/get').then(res => console.log(res))
+const uploadEl = document.getElementById('up')
+uploadEl.addEventListener('click', function() {
+  const fd = new FormData()
+  const fileEl = document.getElementById('file') as HTMLInputElement
+  if (fileEl.files) {
+    fd.append('file', fileEl.files[0])
+    service.post('/more/upload', fd)
+  }
+})
