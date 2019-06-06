@@ -1,4 +1,4 @@
-import axios from '../../src/index'
+import axios, { AxiosError } from '../../src/index'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 
@@ -56,13 +56,30 @@ uploadEl.addEventListener('click', function() {
   }
 })
 
+// tslint:disable-next-line: no-floating-promises
 service.post('/more/post', {
   a: 1
 }, {
   auth: {
-    username: 'lyz1948',
+    username: 'lyz',
     password: '123456'
   }
 }).then(res => {
   console.log(res)
+})
+
+service.get('/more/304').then(res => {
+  console.log(res)
+}).catch((e: AxiosError) => {
+  console.log(e.message)
+})
+
+service.get('/more/304', {
+  validateStatus(status) {
+    return status >= 200 && status < 400
+  }
+}).then(res => {
+  console.log(res)
+}).catch((e: AxiosError) => {
+  console.log(e.message)
 })
