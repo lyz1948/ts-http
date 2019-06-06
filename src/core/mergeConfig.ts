@@ -25,7 +25,7 @@ function deepMergeStrategy(val1: any, val2: any): any {
   }
 }
 
-const strategysDeepKeysMap = ['headers']
+const strategysDeepKeysMap = ['headers', 'auth']
 const strategysKeysMap = ['url', 'data', 'params']
 
 strategysKeysMap.forEach(key => {

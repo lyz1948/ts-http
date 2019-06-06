@@ -55,3 +55,14 @@ uploadEl.addEventListener('click', function() {
     service.post('/more/upload', fd)
   }
 })
+
+service.post('/more/post', {
+  a: 1
+}, {
+  auth: {
+    username: 'lyz1948',
+    password: '123456'
+  }
+}).then(res => {
+  console.log(res)
+})

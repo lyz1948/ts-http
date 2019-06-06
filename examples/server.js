@@ -1,5 +1,6 @@
 const express = require('express')
 const webpack = require('webpack')
+const atob = require('atob')
 const bodyParser = require('body-parser')
 const cookieParse = require('cookie-parser')
 const multiparty = require('connect-multiparty')
@@ -176,6 +177,18 @@ function requstMoreRouter() {
   router.post('/more/upload', (req, res) => {
     console.log(req.body, req.files)
     res.json('Upload Success!')
+  })
+  router.post('/more/post', (req, res) => {
+    const auth = req.headers.authorization
+    const [ type, credentials ] = auth.split(' ')
+    console.log(atob(credentials))
+    const [ username, password ] = atob(credentials).split(':')
+    if (type === 'Basic' && username === 'lyz' && password === '123456') {
+      res.json(req.body)
+    } else {
+      res.status(401)
+      res.end('UnAuthorization')
+    }
   })
 }
 
