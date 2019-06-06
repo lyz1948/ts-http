@@ -1,6 +1,7 @@
 import axios, { AxiosError } from '../../src/index'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
+import qs from 'qs'
 
 const service = axios.create()
 
@@ -82,4 +83,41 @@ service.get('/more/304', {
   console.log(res)
 }).catch((e: AxiosError) => {
   console.log(e.message)
+})
+
+// tslint:disable-next-line: no-floating-promises
+axios.get('/more/get', {
+  params: new URLSearchParams('a=b&c=d')
+}).then(res => {
+  console.log(res)
+})
+
+// tslint:disable-next-line: no-floating-promises
+axios.get('/more/get', {
+  params: {
+    a: 1,
+    b: 2,
+    c: ['x', 'y', 'z']
+  }
+}).then(res => {
+  console.log(res)
+})
+
+const instance = axios.create({
+  paramsSerializer(params) {
+    return qs.stringify(params, {
+      arrayFormat: 'brackets'
+    })
+  }
+})
+
+// tslint:disable-next-line: no-floating-promises
+instance.get('/more/get', {
+  params: {
+    a: 1,
+    b: 2,
+    c: ['x', 'y', 'z']
+  }
+}).then(res => {
+  console.log(res)
 })
