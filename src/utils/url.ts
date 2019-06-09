@@ -74,6 +74,14 @@ export function formatUrl(
   return url
 }
 
+export function isAbsoluteURL(url: string): boolean {
+  return /(^[a-z][a-z\d\+\-\.]*:)?\/\//i.test(url)
+}
+
+export function combinURL(baseURL: string, relativeURL?: string): string {
+  return relativeURL ? baseURL.replace(/\/+$/, '') + '/' + relativeURL.replace(/^\/+/, '') : baseURL
+}
+
 export function isSameOriginUrl(requestUrl: string): boolean {
   const parsedUrl = resolveUrl(requestUrl)
   return parsedUrl.protocol === currentUrl.protocol && parsedUrl.host === currentUrl.host

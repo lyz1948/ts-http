@@ -121,3 +121,10 @@ instance.get('/more/get', {
 }).then(res => {
   console.log(res)
 })
+
+const myInstance = axios.create({
+  baseUrl: 'http://cdn.ykpine.com/'
+})
+
+myInstance.get('image/orange.jpeg')
+myInstance.get('http://cdn.ykpine.com/image/px500_3.png')
