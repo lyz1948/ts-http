@@ -195,6 +195,14 @@ function requstMoreRouter() {
     res.status(304)
     res.end()
   })
+
+  router.get('/more/getX', (req, res) => {
+    res.end('X')
+  })
+
+  router.get('/more/getY', (req, res) => {
+    res.end('Y')
+  })
 }
 
 app.use(router)
